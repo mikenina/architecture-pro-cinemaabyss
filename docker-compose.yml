@@ -108,7 +108,6 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-proxy-service
     depends_on:
-      - proxy-service-fpm
       - monolith
       - movies-service
 #      - events-service
@@ -116,29 +115,15 @@ services:
       - "8000:8000"
     environment:
       PORT: 8000
-#      MONOLITH_URL: http://monolith:8080
-#      MOVIES_SERVICE_URL: http://movies-service:8081
-#      EVENTS_SERVICE_URL: http://events-service:8082
-#      GRADUAL_MIGRATION: "true"
-#      MOVIES_MIGRATION_PERCENT: "50"
-    networks:
-      - cinemaabyss-network
-
-  proxy-service-fpm:
-    build:
-      context: ./src/microservices/proxy
-      dockerfile: dockerfiles/php/Dockerfile
-    container_name: cinemaabyss-proxy-service-fpm
-    volumes:
-      - ./src/microservices/proxy/public:/var/www/public
-    networks:
-      - cinemaabyss-network
-    environment:
       MONOLITH_URL: http://monolith:8080
       MOVIES_SERVICE_URL: http://movies-service:8081
       EVENTS_SERVICE_URL: http://events-service:8082
       GRADUAL_MIGRATION: "true"
       MOVIES_MIGRATION_PERCENT: "50"
+    networks:
+      - cinemaabyss-network
+    volumes:
+      - ./src/microservices/proxy/public:/var/www/public
 
   # Kafka UI for monitoring Kafka
   kafka-ui:
