@@ -156,3 +156,5 @@ go.work
 tests/postman/reports/
 
 src/microservices/proxy/public/supervisord*
+
+istio-1.23.2/

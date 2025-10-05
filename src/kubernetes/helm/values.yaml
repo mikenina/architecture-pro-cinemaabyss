@@ -5,7 +5,7 @@ global:
 
 # Image pull secrets
 imagePullSecrets:
-  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6
+  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaXRsYWJyZWdpc3RyeS5jYWxsdG91Y2gubmV0IjogewoJCQkiYXV0aCI6ICJiMjFwYTJWdWFXNWhPbEJTWjBkdGN6TnciCgkJfSwKCQkiZ2hjci5pbyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAiYXV0aCI6ICJiV2xyWlc1cGJtRTZaMmh3WDJsVWRqSlZPVUpMZW1KTVowMHhSV2RLVDA1R1NuZEtXVXRFYVdoSFFqRTBhbXQ0ZGc9PSIKICAgICAgICAgICAgICAgIH0KCX0KfQo=
 # Database configuration
 database:
   host: postgres
@@ -33,7 +33,7 @@ database:
 monolith:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/monolith
+    repository: ghcr.io/mikenina/architecture-pro-cinemaabyss/monolith
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -53,7 +53,7 @@ monolith:
 proxyService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/proxy-service
+    repository: ghcr.io/mikenina/architecture-pro-cinemaabyss/proxy-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -73,7 +73,7 @@ proxyService:
 moviesService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/movies-service
+    repository: ghcr.io/mikenina/architecture-pro-cinemaabyss/movies-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -90,24 +90,24 @@ moviesService:
     type: ClusterIP
 
 # Events service configuration
-eventsService:
-  enabled: true
-  image:
-    repository: ghcr.io/db-exp/cinemaabysstest/events-service
-    tag: latest
-    pullPolicy: Always
-  replicas: 1
-  resources:
-    limits:
-      cpu: 300m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  service:
-    port: 8082
-    targetPort: 8082
-    type: ClusterIP
+#eventsService:
+#  enabled: true
+#  image:
+#    repository: ghcr.io/db-exp/cinemaabysstest/events-service
+#    tag: latest
+#    pullPolicy: Always
+#  replicas: 1
+#  resources:
+#    limits:
+#      cpu: 300m
+#      memory: 256Mi
+#    requests:
+#      cpu: 100m
+#      memory: 128Mi
+#  service:
+#    port: 8082
+#    targetPort: 8082
+#    type: ClusterIP
 
 # Kafka configuration
 kafka:
@@ -182,4 +182,4 @@ ingress:
 config:
   # Strangler Fig configuration
   gradualMigration: "true"
-  moviesMigrationPercent: "100"
+  moviesMigrationPercent: "50"
