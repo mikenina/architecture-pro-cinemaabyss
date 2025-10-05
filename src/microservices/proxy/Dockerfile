@@ -12,5 +12,6 @@ COPY ./public /var/www/public
 
 WORKDIR /var/www/public
 
+RUN test -f /var/www/public/index.php || (echo "❌ index.php missing!" && exit 1)
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
