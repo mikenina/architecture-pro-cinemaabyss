@@ -10,6 +10,8 @@ exit;
 class Api
 {
     private ?string $apiMethod = null;
+    private ?string $httpMethod = null;
+    private string $httpContent = '';
     private ?string $requestUri = null;
     private ?string $monolithUrl = null;
     private ?string $moviesServiceUrl = null;
@@ -28,6 +30,8 @@ class Api
         $proxyService = new ProxyService(
             new Curler(),
             $this->requestUri,
+            $this->httpMethod,
+            $this->httpContent,
             $this->apiMethod,
             $this->monolithUrl,
             $this->moviesServiceUrl,
@@ -44,10 +48,19 @@ class Api
         $this->gradualMigrationFlag = $varServer['GRADUAL_MIGRATION'] ?? null;
         $this->moviesMigrationPercent = $varServer['MOVIES_MIGRATION_PERCENT'] ?? null;
         $this->requestUri = $varServer['REQUEST_URI'] ?? null;
+        $this->httpMethod = $varServer['REQUEST_METHOD'] ?? null;
 
         $pathInfo = $varServer['PATH_INFO'] ?: $this->preparePathInfo($varServer);
         preg_match('/^\/([A-Za-z]+)\/?.*$/', $pathInfo, $matches);
         $this->apiMethod = !empty($matches[1]) ? $matches[1] : null;
+
+        if (
+            ('POST' === $this->httpMethod)
+            && ('application/json' === $_SERVER['HTTP_CONTENT_TYPE'])
+            && $_SERVER['CONTENT_LENGTH'] > 0
+        ) {
+            $this->httpContent = file_get_contents('php://input');
+        }
     }
 
     private function preparePathInfo(array $varServer): string
@@ -71,7 +84,7 @@ class Api
 
     private function validateAttributes(): void
     {
-        if (null === $this->apiMethod || null === $this->requestUri) {
+        if (null === $this->apiMethod || null === $this->requestUri || null === $this->httpMethod) {
             header('HTTP/1.1 400 Bad Request', true, 400);
             exit;
         }
@@ -90,6 +103,8 @@ class ProxyService
     public function __construct(
         private readonly Curler $curler,
         private readonly string $requestUri,
+        private readonly string $httpMethod,
+        private readonly string $httpContent,
         private readonly string $apiMethod,
         private readonly string $monolithUrl,
         private readonly string $moviesServiceUrl,
@@ -126,7 +141,7 @@ class ProxyService
     private function delegateMonolith(): string
     {
         $path = sprintf('%s%s', $this->monolithUrl, $this->requestUri);
-        $curlResponseDto = $this->curler->requestGET($path);
+        $curlResponseDto = $this->curler->request($path, $this->httpMethod, $this->httpContent);
 
         if (200 === $curlResponseDto->getStatusCode()) {
             return $curlResponseDto->getBody();
@@ -137,7 +152,7 @@ class ProxyService
     private function delegateMoviesMicrocervice(): string
     {
         $path = sprintf('%s%s', $this->moviesServiceUrl, $this->requestUri);
-        $curlResponseDto = $this->curler->requestGET($path);
+        $curlResponseDto = $this->curler->request($path, $this->httpMethod, $this->httpContent);
 
         if (200 === $curlResponseDto->getStatusCode()) {
             return $curlResponseDto->getBody();
@@ -151,22 +166,26 @@ class Curler
     public function __construct()
     {}
 
-    public function requestGET(string $path): CurlResponseDto
+    public function request(string $path, string $method, string $content): CurlResponseDto
     {
-        $ch = curl_init();
+        $ch = curl_init($path);
         if (!$ch) {
             throw new Exception('Unable to init curl');
         }
 
-        curl_setopt_array(
-            $ch,
-            [
-                CURLOPT_URL => $path,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_VERBOSE => true,
-                CURLOPT_TIMEOUT => 30,
-            ]
-        );
+        if ('POST' === $method) {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+                'Accept: application/json',
+                sprintf('%s: %s', 'Content-Length',  mb_strlen($this->parameters, '8bit')),
+            ]);
+        }
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
         $responseBody = (string) curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlErrorMessage = curl_error($ch);
