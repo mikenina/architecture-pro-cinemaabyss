@@ -121,9 +121,9 @@ class ProxyService
                 && $this->gradualMigrationFlag
                 && (random_int(1, 100) <= $this->moviesMigrationPercent)
             ) {
-                $result = $this->delegateMoviesMicrocervice();
+                $response = $this->delegateMoviesMicrocervice();
             } else {
-                $result = $this->delegateMonolith();
+                $response = $this->delegateMonolith();
             }
 
         } catch (Exception $exception) {
@@ -132,32 +132,25 @@ class ProxyService
             return;
         }
 
-        if (json_validate($result)) {
-            header('Content-type: application/json');
+        http_response_code($response->getStatusCode() ?: 500);
+
+        $body = $response->getBody();
+        if (json_validate($body)) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo $body;
         }
-        echo $result;
     }
 
-    private function delegateMonolith(): string
+    private function delegateMonolith(): CurlResponseDto
     {
         $path = sprintf('%s%s', $this->monolithUrl, $this->requestUri);
-        $curlResponseDto = $this->curler->request($path, $this->httpMethod, $this->httpContent);
-
-        if (200 === $curlResponseDto->getStatusCode()) {
-            return $curlResponseDto->getBody();
-        }
-        throw new Exception($curlResponseDto->getBody(), $curlResponseDto->getStatusCode());
+        return $this->curler->request($path, $this->httpMethod, $this->httpContent);
     }
 
-    private function delegateMoviesMicrocervice(): string
+    private function delegateMoviesMicrocervice(): CurlResponseDto
     {
         $path = sprintf('%s%s', $this->moviesServiceUrl, $this->requestUri);
-        $curlResponseDto = $this->curler->request($path, $this->httpMethod, $this->httpContent);
-
-        if (200 === $curlResponseDto->getStatusCode()) {
-            return $curlResponseDto->getBody();
-        }
-        throw new Exception($curlResponseDto->getBody(), $curlResponseDto->getStatusCode());
+        return $this->curler->request($path, $this->httpMethod, $this->httpContent);
     }
 }
 
@@ -179,7 +172,7 @@ class Curler
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 'Content-Type: application/json',
                 'Accept: application/json',
-                sprintf('%s: %s', 'Content-Length',  mb_strlen($this->parameters, '8bit')),
+                sprintf('%s: %s', 'Content-Length',  mb_strlen($content, '8bit')),
             ]);
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
