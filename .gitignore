@@ -156,5 +156,6 @@ go.work
 tests/postman/reports/
 
 src/microservices/proxy/public/supervisord*
+src/microservices/events/public/supervisord*
 
 _tmp/

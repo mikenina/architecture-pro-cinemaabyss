@@ -9,13 +9,11 @@ exit;
 
 class Api
 {
-    private const string CMD_HEALTHCHECK = 'health';
     private const string CMD_CREATE_USER = 'user';
     private const string CMD_CREATE_MOVIE = 'movie';
     private const string CMD_CREATE_PAYMENT = 'payment';
 
     private const KNOWN_CMD = [
-        self::CMD_HEALTHCHECK,
         self::CMD_CREATE_USER,
         self::CMD_CREATE_MOVIE,
         self::CMD_CREATE_PAYMENT,
@@ -45,9 +43,6 @@ class Api
             },
             self::CMD_CREATE_PAYMENT => function () {
                 return $this->kafkaService->createPayment($this->httpParsedBody);
-            },
-            self::CMD_HEALTHCHECK => function () {
-                return ['status' => true];
             },
             default => function () {
                 http_response_code(400);
