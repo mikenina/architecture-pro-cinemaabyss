@@ -263,6 +263,9 @@ cat .docker/config.json | base64
   9. Добавьте в /etc/hosts
   127.0.0.1 cinemaabyss.example.com
 
+  kubectl get ingress -n cinemaabyss
+  kubectl get svc -n cinemaabyss
+
   10. Вызовите
   ```bash
   minikube tunnel
@@ -280,7 +283,7 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
-![Kubernetes Api-Gateway](images/kubernetes_proxy_service.png)
+![Kubernetes Api-Gateway](images/task_3/proxy_service.png)
 
 ## Задание 4
 _Для простоты дальнейшего обновления и развертывания вам как архитектуру необходимо так же реализовать helm-чарты для прокси-сервиса и проверить работу_ 
@@ -422,6 +425,8 @@ You can see 21 for the upstream_rq_pending_overflow value which means 21 calls s
 ```
 
 Приложите скриншот работы circuit breaker'а
+
+![Fortio log](images/task_5/fortio_log.png)
 
 Удаляем все
 ```bash

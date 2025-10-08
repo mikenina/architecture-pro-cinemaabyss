@@ -37,8 +37,6 @@ spec:
               value: "$(GRADUAL_MIGRATION)"
             - name: MOVIES_MIGRATION_PERCENT
               value: "$(MOVIES_MIGRATION_PERCENT)"
-            - name: EVENTS_SERVICE_URL
-              value: "stub"
           envFrom:
             - configMapRef:
                 name: cinemaabyss-config
