@@ -13,7 +13,6 @@ class Api
     private ?string $requestUri = null;
     private ?string $monolithUrl = null;
     private ?string $moviesServiceUrl = null;
-    private ?string $eventsServiceUrl = null;
     private ?string $gradualMigrationFlag = null;
     private ?string $moviesMigrationPercent = null;
 
@@ -31,7 +30,6 @@ class Api
             $this->requestUri,
             $this->apiMethod,
             $this->monolithUrl,
-            $this->eventsServiceUrl,
             $this->moviesServiceUrl,
             ('true' === $this->gradualMigrationFlag),
             (int) $this->moviesMigrationPercent
@@ -43,7 +41,6 @@ class Api
     {
         $this->monolithUrl = $varServer['MONOLITH_URL'] ?? null;
         $this->moviesServiceUrl = $varServer['MOVIES_SERVICE_URL'] ?? null;
-        $this->eventsServiceUrl = $varServer['EVENTS_SERVICE_URL'] ?? null;
         $this->gradualMigrationFlag = $varServer['GRADUAL_MIGRATION'] ?? null;
         $this->moviesMigrationPercent = $varServer['MOVIES_MIGRATION_PERCENT'] ?? null;
         $this->requestUri = $varServer['REQUEST_URI'] ?? null;
@@ -76,12 +73,12 @@ class Api
     {
         if (null === $this->apiMethod || null === $this->requestUri) {
             header('HTTP/1.1 400 Bad Request', true, 400);
-            return;
+            exit;
         }
 
-        if (null === $this->monolithUrl || null === $this->eventsServiceUrl || null === $this->gradualMigrationFlag || null === $this->moviesMigrationPercent || null === $this->moviesServiceUrl) {
+        if (null === $this->monolithUrl || null === $this->gradualMigrationFlag || null === $this->moviesMigrationPercent || null === $this->moviesServiceUrl) {
             header('HTTP/1.1 500 ENV incorrect', true, 500);
-            return;
+            exit;
         }
     }
 }
@@ -95,7 +92,6 @@ class ProxyService
         private readonly string $requestUri,
         private readonly string $apiMethod,
         private readonly string $monolithUrl,
-        private readonly string $eventsServiceUrl,
         private readonly string $moviesServiceUrl,
         private readonly bool $gradualMigrationFlag,
         private readonly int $moviesMigrationPercent,
@@ -116,7 +112,7 @@ class ProxyService
             }
 
         } catch (Exception $exception) {
-            http_response_code($exception->getCode() ?? 500);
+            http_response_code($exception->getCode() ?: 500);
             echo $exception->getMessage();
             return;
         }
@@ -178,7 +174,7 @@ class Curler
         curl_close($ch);
 
         if (CURLE_OK !== $curlErrorCode) {
-            throw new Exception($curlErrorMessage);
+            throw new Exception($curlErrorMessage, 500);
         }
 
         return new CurlResponseDto($responseBody, $httpCode);
