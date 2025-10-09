@@ -1,0 +1,63 @@
+@startuml
+!NEW_C4_STYLE=1
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define osaPuml https://raw.githubusercontent.com/Crashedmind/PlantUML-opensecurityarchitecture2-icons/master
+!include osaPuml/Common.puml
+!include osaPuml/User/all.puml
+!include osaPuml/Misc/all.puml
+!include osaPuml/Hardware/all.puml
+
+!include <office/concepts/navigation.puml>
+!include <office/concepts/credit_card.puml>
+!include <office/concepts/list_library.puml>
+!include <office/Communications/voip_gateway.puml>
+!include <office/Users/user_accounts.puml>
+
+!include <azure/AzureCommon.puml>
+!include <azure/Management/AzureCostAlert.puml>
+!include <azure/AIMachineLearning/AzureCognitiveServices.puml>
+
+LAYOUT_LEFT_RIGHT()
+
+AddElementTag("amqp", $shape=RoundedBoxShape(), $bgColor="black", $fontColor="lightYellow")
+AddElementTag("storage", $bgColor="white", $fontColor="lightSkyBlue")
+AddRelTag("async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DashedLine())
+
+Person_Ext(user, "Пользователь", "", $sprite="osa_user_blue")
+System_Ext(ext_video_hosting, "Видео-хостинг", "Media Storage, CDN", $sprite="osa_cloud")
+System_Ext(ext_payment_system, "Платежные системы", "", $sprite="AzureCostAlert")
+System_Ext(ext_cinema_system, "Онлайн-кинотеатры", "", $sprite="osa_media_tape")
+System_Ext(ext_recommendation_system, "Рекомендательная системы", "", $sprite="AzureCognitiveServices")
+
+Container_Boundary(cinema_system, "Онлайн-кинотеатр") {
+    Container(client_app, "Client Application", "", "UX/UI", $sprite="navigation")
+    Container(api_gateway, "API Gateway", "backend", "Аутентификация и маршрутизация запросов", $sprite="voip_gateway")
+    Container(customer_microservice, "Customer Microservice", "backend", "Профиль пользователя, аутентификация и авторизация, рекомендации, избранное", $sprite="user_accounts")
+    Container(billing_microservice, "Billing Microservice", "backend", "Платежи и подписки", $sprite="credit_card")
+    Container(content_metadata_microservice, "Content Metadata Microservice", "backend", "Поиск контента, рейтинги, превью", $sprite="list_library")
+    Container(recommendation_topic, "Recommendation Topic", "AMQP", "", $tags="amqp")
+    ContainerDb(customer_db, "Customer DB", "Postgres", "", $tags="storage")
+    ContainerDb(billing_db, "Billing DB", "Postgres", "", $tags="storage")
+    ContainerDb(content_metadata_db, "Metadata DB", "Postgres", "", $tags="storage")
+}
+
+Rel(user, client_app, "Ищет и смотрит фильмы", "")
+
+Rel(client_app, ext_video_hosting, "Запрашивает потоковые данные", "")
+Rel(client_app, api_gateway, "Отправляет\получает данные", "http")
+
+Rel(api_gateway, customer_microservice, "Отправляет\получает данные", "http")
+Rel(api_gateway, billing_microservice, "Отправляет\получает данные", "http")
+Rel(api_gateway, content_metadata_microservice, "Отправляет\получает данные", "http")
+
+Rel(billing_microservice, ext_payment_system, "Отправляет\получает данные", "")
+Rel(billing_microservice, billing_db, "Сохраняет\получает данные", "")
+Rel(customer_microservice, recommendation_topic, "Получает подборки", "", $tags="async")
+Rel(customer_microservice, customer_db, "Сохраняет\получает данные", "")
+Rel(content_metadata_microservice, content_metadata_db, "Сохраняет\получает данные", "")
+Rel(content_metadata_microservice, ext_cinema_system, "Агрегирует контент", "")
+
+Rel(ext_recommendation_system, recommendation_topic, "", "", $tags="async")
+@enduml

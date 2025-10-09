@@ -1,17 +1,18 @@
 ## Изучите [README.md](README.md) файл и структуру проекта.
 
+Развитие онлайн-киноагрегатора "Кинобездна": бесшовный переход на микросервисы, переход в Kubernetes-кластер..
+
 ## Задание 1
+_Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
+Результат представьте в виде контейнерной диаграммы в нотации С4._
 
-1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
-Результат представьте в виде контейнерной диаграммы в нотации С4.
-Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
-
+[Диаграмма контейнеров](https://www.plantuml.com/plantuml/uml/jLRRRXf76BxdAJOe5o21LwroLPL863k99R0fOAMMAgs6tJ6CCdlexgnjMbLAugPDbQYEUjDU9UqR42TkY6FmAyo-KV-PtSMxB60dJYqPcDFtVVznviRc-dsjTajhTtRgwvKlShaRnDAfRs3VfKgVCSVxIbLTjB_I8wplTtqFkxfjCMon5TqsLOSYY_acBNlCeAIhrcwLcs9gkr5NJUGnxCAKLeCJY5ZONN5WBt0OU1U6YksX9anSWQVc8g-F3PDOXXeJb6q7MnxMVPUm0NBrFc5OPxwBlomJEEj50gOMnNHgpJPDsmgrP1QtWLb5b2vORX1FNx9y3xd6FdBnnPQBFL_Rkxj4nofeqx73FDL2UwI768cqt5woLNUnGPYc0_obUodnc0R1S94xMBHPkC2tY2xPFNNF9eu6Kl0-MdX4ECPJHM0qfEksRp4lsfhOYtu0_wjLyPdmyktCZWQoK0-R4DvuiyUg5BjimVxgHWD1W2rSnyYrYDMBZ_KimiWURcDt3qHE5TMhErlR7Qs-VgUZjJRktkiKYhbSrJ3MgIJje5uXZypldNn9kUdraOChBR38mCQgVT0Muq8HLhgzcarjjvBlKgG_47jt8IUZEKfwVRQ3ARNtyyLPR8_PBXYOJuBiYmIT1z9-C5YbFWvHMfY6who1fOlT31z4kszMMwsj-zgThSsELjkgRxLWbO9FKgl9XJORK5nPawLJXt6X25veGXXjIri_O0KHp9AIvw_uX7y8dlDty7tCXy5ZVYB6m9wN3dAWmd0b3qckoVXtGxNj0TINAP50exP736nhVOWan4V0_i57_2r0JSh14pu97W7kY8_v6u7RW7n6IZjqKqcfhMtECkdKzeqiYuC6mikQ9wT3zHyYpV_oSV2CdoZ18pwIT2VyB7WsQqOwuR8CEdZAH0c2bo0QAFXxFYxpKsd3H883Q_0mIo3Kcy8-ZK4cPGbS32qDZ31azIM8_WRCKuZ16NoFmNNJIC1e61nTpQwPYW3wtBJ_QgiYow4l53xIo7nH-J6dmDyKgg1J8kA070UEr-H0gJeEZPfAf2w__QswlP6KUT7rG5eQ4Zaaxa9mijhSKEw68m7KXH84ducV_4LmABMDHKe5FuFQKz3v2_m-KlX80GSE8J1FuVzG9jsxYrNuoS-3Xo8VHROdbIMxO4QRxaDDc-12a-YkxONU5PP7yqeZCJ-hzvKa53eXc0e_drjlHoK5VYytRCYFOMK2S0cZIWgCPpC7LlW84CM-rx0-X7a8AJz9MfpgvXcJkuH25-dDMhmQJYytE56J8wbSsFmMFY61HNebLIGkjwpRmqS0r1D3K2yeu_vmNMb4wvUeceJyYdJMUEhgOUJ2zt6BaguxbtF7mVFWzwJSvFsQqJjJsynsY0xKhTIqqX7JGbAryKqphcE6Ububl9LcKDUw5-bdT9D9jxOgJZUXcVLSgFKKKdm7PS7Ym4giE9oV1fM9ZyISHkDge3_bSd3jHTTHgg_mluBV-4dmMAGG1EvCz2IH_30JbzEq5HP3bEJvkTVIdr4760PF0G7gBoGub_rk8ZFZM5uZeev4rOX1n31BaEvO_2KWI6Y0XO8MmDz5rNuO_1eppS2ArsyiFeMtgELSYoR3ig3AFo_9PMLyVS_DDsF-Y-6Jo2ApvlEaAeh_0wdq9Eov7uc-8EGBkahqS4kWXbtsjRmXmYwRR2toIRcKADrchcF8ye3FRnl_7z_STzqB_aPsUEZsugKGmgSkXcHVMV9oMn2UkTx_3m00)
+![Диаграмма контейнеров](images/task_1/cinema_container.png)
 
 ## Задание 2
 
 ### 1. Proxy
-Команда КиноБездны уже выделила сервис метаданных о фильмах movies и вам необходимо реализовать бесшовный переход с применением паттерна Strangler Fig в части реализации прокси-сервиса (API Gateway), с помощью которого можно будет постепенно переключать траффик, используя фиче-флаг.
+_Команда КиноБездны уже выделила сервис метаданных о фильмах movies и вам необходимо реализовать бесшовный переход с применением паттерна Strangler Fig в части реализации прокси-сервиса (API Gateway), с помощью которого можно будет постепенно переключать траффик, используя фиче-флаг._
 
 
 Реализуйте сервис на любом языке программирования в ./src/microservices/proxy.
@@ -59,11 +60,17 @@
 Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman 
 Приложите скриншот тестов и скриншот состояния топиков Kafka http://localhost:8090 
 
+![docker tests passed](images/task_2/docker_tests_passed.png)
+![docker tests passed](images/task_2/kafka_topics.png)
+![docker tests passed](images/task_2/kafka_topic_user_events.png)
+![docker tests passed](images/task_2/kafka_topic_movie_events.png)
+![docker tests passed](images/task_2/kafka_topic_payment_events.png)
+![docker tests passed](images/task_2/kafka_topic_consumer_offsets.png)
 
 ## Задание 3
 
-Команда начала переезд в Kubernetes для лучшего масштабирования и повышения надежности. 
-Вам, как архитектору осталось самое сложное:
+_Команда начала переезд в Kubernetes для лучшего масштабирования и повышения надежности. 
+Вам, как архитектору осталось самое сложное:_
  - реализовать CI/CD для сборки прокси сервиса
  - реализовать необходимые конфигурационные файлы для переключения трафика.
 
@@ -256,6 +263,9 @@ cat .docker/config.json | base64
   9. Добавьте в /etc/hosts
   127.0.0.1 cinemaabyss.example.com
 
+  kubectl get ingress -n cinemaabyss
+  kubectl get svc -n cinemaabyss
+
   10. Вызовите
   ```bash
   minikube tunnel
@@ -273,10 +283,12 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
-
+![Proxy service log](images/task_3/proxy_service_log.png)
+![Events service log](images/task_3/event_service_log.png)
+![Events tests output](images/task_3/event_tests_output.png)
 
 ## Задание 4
-Для простоты дальнейшего обновления и развертывания вам как архитектуру необходимо так же реализовать helm-чарты для прокси-сервиса и проверить работу 
+_Для простоты дальнейшего обновления и развертывания вам как архитектуру необходимо так же реализовать helm-чарты для прокси-сервиса и проверить работу_ 
 
 Для этого:
 1. Перейдите в директорию helm и отредактируйте файл values.yaml
@@ -348,10 +360,11 @@ minikube tunnel
 Потом вызовите 
 https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
-
+![Helm install log](images/task_4/helm_install_log.png)   
+![Proxy service log](images/task_4/proxy_service_log.png)   
 
 # Задание 5
-Компания планирует активно развиваться и для повышения надежности, безопасности, реализации сетевых паттернов типа Circuit Breaker и канареечного деплоя вам как архитектору необходимо развернуть istio и настроить circuit breaker для monolith и movies сервисов.
+_Компания планирует активно развиваться и для повышения надежности, безопасности, реализации сетевых паттернов типа Circuit Breaker и канареечного деплоя вам как архитектору необходимо развернуть istio и настроить circuit breaker для monolith и movies сервисов._
 
 ```bash
 
@@ -414,6 +427,8 @@ You can see 21 for the upstream_rq_pending_overflow value which means 21 calls s
 ```
 
 Приложите скриншот работы circuit breaker'а
+
+![Fortio log](images/task_5/fortio_log.png)
 
 Удаляем все
 ```bash

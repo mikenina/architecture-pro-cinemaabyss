@@ -154,3 +154,8 @@ go.work
 
 # Postman tests reports
 tests/postman/reports/
+
+src/microservices/proxy/public/supervisord*
+src/microservices/events/public/supervisord*
+
+_tmp/
