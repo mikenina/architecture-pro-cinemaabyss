@@ -90,24 +90,24 @@ moviesService:
     type: ClusterIP
 
 # Events service configuration
-#eventsService:
-#  enabled: true
-#  image:
-#    repository: ghcr.io/db-exp/cinemaabysstest/events-service
-#    tag: latest
-#    pullPolicy: Always
-#  replicas: 1
-#  resources:
-#    limits:
-#      cpu: 300m
-#      memory: 256Mi
-#    requests:
-#      cpu: 100m
-#      memory: 128Mi
-#  service:
-#    port: 8082
-#    targetPort: 8082
-#    type: ClusterIP
+eventsService:
+  enabled: true
+  image:
+    repository: ghcr.io/mikenina/architecture-pro-cinemaabyss/events-service
+    tag: latest
+    pullPolicy: Always
+  replicas: 1
+  resources:
+    limits:
+      cpu: 300m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    port: 8082
+    targetPort: 8082
+    type: ClusterIP
 
 # Kafka configuration
 kafka:
@@ -162,10 +162,10 @@ zookeeper:
 # Ingress configuration
 ingress:
   enabled: true
-  className: nginx
+  className: "traefik"
   annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
     - host: cinemaabyss.example.com
       paths:

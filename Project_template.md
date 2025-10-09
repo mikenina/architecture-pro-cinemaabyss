@@ -283,7 +283,9 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
-![Kubernetes Api-Gateway](images/task_3/proxy_service.png)
+![Proxy service log](images/task_3/proxy_service_log.png)
+![Events service log](images/task_3/event_service_log.png)
+![Events tests output](images/task_3/event_tests_output.png)
 
 ## Задание 4
 _Для простоты дальнейшего обновления и развертывания вам как архитектуру необходимо так же реализовать helm-чарты для прокси-сервиса и проверить работу_ 
@@ -358,8 +360,8 @@ minikube tunnel
 Потом вызовите 
 https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
-![Helm deployment log](images/helm/kubernetes_proxy_service_log.png)   
-![Get movies list](images/helm/kubernetes_proxy_service_result.png)   
+![Helm install log](images/task_4/helm_install_log.png)   
+![Proxy service log](images/task_4/proxy_service_log.png)   
 
 # Задание 5
 _Компания планирует активно развиваться и для повышения надежности, безопасности, реализации сетевых паттернов типа Circuit Breaker и канареечного деплоя вам как архитектору необходимо развернуть istio и настроить circuit breaker для monolith и movies сервисов._
